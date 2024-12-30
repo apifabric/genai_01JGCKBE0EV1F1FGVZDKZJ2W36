@@ -1,0 +1,274 @@
+{
+    "models": [
+        {
+            "classname": "Airport",
+            "code": "class Airport(Base):\n    __tablename__ = 'airport'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String(100), nullable=True)\n    location = Column(String(100), nullable=True)\n    country = Column(String(100), nullable=True)\n    code = Column(String(10), nullable=True)\n    opened_date = Column(Date, nullable=True)",
+            "description": "Defines the Airport entity with basic attributes like name, location, country, code, and opened_date.",
+            "name": "Airport"
+        },
+        {
+            "classname": "Flight",
+            "code": "class Flight(Base):\n    __tablename__ = 'flight'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    flight_number = Column(String(10), nullable=True)\n    departure_airport_id = Column(Integer, ForeignKey('airport.id'))\n    arrival_airport_id = Column(Integer, ForeignKey('airport.id'))\n    scheduled_departure = Column(DateTime, nullable=True)\n    scheduled_arrival = Column(DateTime, nullable=True)\n    status = Column(String(20), nullable=True)",
+            "description": "Defines the Flight entity representing each flight with attributes such as flight number, departure and arrival times, and status.",
+            "name": "Flight"
+        },
+        {
+            "classname": "Airline",
+            "code": "class Airline(Base):\n    __tablename__ = 'airline'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String(100), nullable=True)\n    country = Column(String(100), nullable=True)\n    founded_date = Column(Date, nullable=True)",
+            "description": "Defines the Airline entity, which includes the airline's name, country, and the date it was founded.",
+            "name": "Airline"
+        },
+        {
+            "classname": "Aircraft",
+            "code": "class Aircraft(Base):\n    __tablename__ = 'aircraft'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    model = Column(String(50), nullable=True)\n    manufacturer = Column(String(100), nullable=True)\n    seats = Column(Integer, nullable=True)\n    airline_id = Column(Integer, ForeignKey('airline.id'), nullable=True)",
+            "description": "Represents aircraft used in flights, including attributes such as model, manufacturer, and seats.",
+            "name": "Aircraft"
+        },
+        {
+            "classname": "AirportRunway",
+            "code": "class AirportRunway(Base):\n    __tablename__ = 'airport_runway'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    airport_id = Column(Integer, ForeignKey('airport.id'))\n    code = Column(String(10), nullable=True)\n    length = Column(Integer, nullable=True)\n    surface_type = Column(String(30), nullable=True)",
+            "description": "Describes the runways at airports, including runway code, length, and surface type.",
+            "name": "AirportRunway"
+        },
+        {
+            "classname": "FlightCrew",
+            "code": "class FlightCrew(Base):\n    __tablename__ = 'flight_crew'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    flight_id = Column(Integer, ForeignKey('flight.id'))\n    crew_member_id = Column(Integer, ForeignKey('crew_member.id'))\n    position = Column(String(30), nullable=True)",
+            "description": "Junction table to map crew members to flights with positions.",
+            "name": "FlightCrew"
+        },
+        {
+            "classname": "CrewMember",
+            "code": "class CrewMember(Base):\n    __tablename__ = 'crew_member'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String(100), nullable=True)\n    role = Column(String(50), nullable=True)",
+            "description": "Details for crew members including their name and role.",
+            "name": "CrewMember"
+        },
+        {
+            "classname": "Baggage",
+            "code": "class Baggage(Base):\n    __tablename__ = 'baggage'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    flight_id = Column(Integer, ForeignKey('flight.id'))\n    weight = Column(Float, nullable=True)\n    owner_name = Column(String(100), nullable=True)",
+            "description": "Baggage information for a flight, including weight and owner.",
+            "name": "Baggage"
+        },
+        {
+            "classname": "Passenger",
+            "code": "class Passenger(Base):\n    __tablename__ = 'passenger'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    flight_id = Column(Integer, ForeignKey('flight.id'))\n    name = Column(String(100), nullable=True)\n    seat_number = Column(String(10), nullable=True)",
+            "description": "Contains passenger details for a flight, including name and seat number.",
+            "name": "Passenger"
+        },
+        {
+            "classname": "Ticket",
+            "code": "class Ticket(Base):\n    __tablename__ = 'ticket'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    passenger_id = Column(Integer, ForeignKey('passenger.id'))\n    issue_date = Column(Date, nullable=True)\n    price = Column(Float, nullable=True)",
+            "description": "Represents tickets purchased by passengers for flights.",
+            "name": "Ticket"
+        },
+        {
+            "classname": "MaintenanceRecord",
+            "code": "class MaintenanceRecord(Base):\n    __tablename__ = 'maintenance_record'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    aircraft_id = Column(Integer, ForeignKey('aircraft.id'))\n    maintenance_date = Column(Date, nullable=True)\n    description = Column(String(200), nullable=True)",
+            "description": "Maintenance logs for aircraft, detailing the maintenance performed.",
+            "name": "MaintenanceRecord"
+        },
+        {
+            "classname": "LoungeAccess",
+            "code": "class LoungeAccess(Base):\n    __tablename__ = 'lounge_access'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    passenger_id = Column(Integer, ForeignKey('passenger.id'))\n    airport_id = Column(Integer, ForeignKey('airport.id'))\n    access_date = Column(Date, nullable=True)",
+            "description": "Tracks lounge access for passengers at airports.",
+            "name": "LoungeAccess"
+        }
+    ],
+    "rules": [],
+    "test_data": "# Initializing test data for each table\n# Note: Derived attributes such as sums and counts are manually initialized in the data.\n# Passenger is an example table for derived data manually initialized with respective counts or sums if applicable.",
+    "test_data_rows": [
+        {
+            "test_data_row_variable": "airport1",
+            "code": "airport1 = Airport(name=\"JFK International\", location=\"New York\", country=\"USA\", code=\"JFK\", opened_date=date(1948, 7, 1))"
+        },
+        {
+            "test_data_row_variable": "airport2",
+            "code": "airport2 = Airport(name=\"Heathrow\", location=\"London\", country=\"UK\", code=\"LHR\", opened_date=date(1946, 5, 31))"
+        },
+        {
+            "test_data_row_variable": "airport3",
+            "code": "airport3 = Airport(name=\"Haneda\", location=\"Tokyo\", country=\"Japan\", code=\"HND\", opened_date=date(1931, 8, 25))"
+        },
+        {
+            "test_data_row_variable": "airport4",
+            "code": "airport4 = Airport(name=\"Changi\", location=\"Singapore\", country=\"Singapore\", code=\"SIN\", opened_date=date(1981, 7, 1))"
+        },
+        {
+            "test_data_row_variable": "flight1",
+            "code": "flight1 = Flight(flight_number=\"AA100\", departure_airport_id=1, arrival_airport_id=2, scheduled_departure=datetime(2023, 10, 10, 10, 0, 0), scheduled_arrival=datetime(2023, 10, 10, 20, 0, 0), status=\"On Time\")"
+        },
+        {
+            "test_data_row_variable": "flight2",
+            "code": "flight2 = Flight(flight_number=\"BA200\", departure_airport_id=2, arrival_airport_id=1, scheduled_departure=datetime(2023, 10, 11, 15, 0, 0), scheduled_arrival=datetime(2023, 10, 11, 17, 30, 0), status=\"Delayed\")"
+        },
+        {
+            "test_data_row_variable": "flight3",
+            "code": "flight3 = Flight(flight_number=\"JL300\", departure_airport_id=3, arrival_airport_id=4, scheduled_departure=datetime(2023, 10, 10, 14, 0, 0), scheduled_arrival=datetime(2023, 10, 10, 22, 0, 0), status=\"Cancelled\")"
+        },
+        {
+            "test_data_row_variable": "flight4",
+            "code": "flight4 = Flight(flight_number=\"SQ400\", departure_airport_id=4, arrival_airport_id=3, scheduled_departure=datetime(2023, 10, 12, 8, 0, 0), scheduled_arrival=datetime(2023, 10, 12, 16, 0, 0), status=\"On Time\")"
+        },
+        {
+            "test_data_row_variable": "airline1",
+            "code": "airline1 = Airline(name=\"American Airlines\", country=\"USA\", founded_date=date(1926, 4, 15))"
+        },
+        {
+            "test_data_row_variable": "airline2",
+            "code": "airline2 = Airline(name=\"British Airways\", country=\"UK\", founded_date=date(1974, 3, 31))"
+        },
+        {
+            "test_data_row_variable": "airline3",
+            "code": "airline3 = Airline(name=\"Japan Airlines\", country=\"Japan\", founded_date=date(1951, 8, 1))"
+        },
+        {
+            "test_data_row_variable": "airline4",
+            "code": "airline4 = Airline(name=\"Singapore Airlines\", country=\"Singapore\", founded_date=date(1947, 5, 1))"
+        },
+        {
+            "test_data_row_variable": "aircraft1",
+            "code": "aircraft1 = Aircraft(model=\"Boeing 737\", manufacturer=\"Boeing\", seats=160, airline_id=1)"
+        },
+        {
+            "test_data_row_variable": "aircraft2",
+            "code": "aircraft2 = Aircraft(model=\"Airbus A380\", manufacturer=\"Airbus\", seats=500, airline_id=2)"
+        },
+        {
+            "test_data_row_variable": "aircraft3",
+            "code": "aircraft3 = Aircraft(model=\"Boeing 787\", manufacturer=\"Boeing\", seats=300, airline_id=3)"
+        },
+        {
+            "test_data_row_variable": "aircraft4",
+            "code": "aircraft4 = Aircraft(model=\"Airbus A350\", manufacturer=\"Airbus\", seats=350, airline_id=4)"
+        },
+        {
+            "test_data_row_variable": "airport_runway1",
+            "code": "airport_runway1 = AirportRunway(airport_id=1, code=\"4R/22L\", length=4000, surface_type=\"Asphalt\")"
+        },
+        {
+            "test_data_row_variable": "airport_runway2",
+            "code": "airport_runway2 = AirportRunway(airport_id=1, code=\"13L/31R\", length=3500, surface_type=\"Concrete\")"
+        },
+        {
+            "test_data_row_variable": "airport_runway3",
+            "code": "airport_runway3 = AirportRunway(airport_id=2, code=\"9L/27R\", length=3700, surface_type=\"Asphalt\")"
+        },
+        {
+            "test_data_row_variable": "airport_runway4",
+            "code": "airport_runway4 = AirportRunway(airport_id=3, code=\"16L/34R\", length=3000, surface_type=\"Concrete\")"
+        },
+        {
+            "test_data_row_variable": "flight_crew1",
+            "code": "flight_crew1 = FlightCrew(flight_id=1, crew_member_id=1, position=\"Pilot\")"
+        },
+        {
+            "test_data_row_variable": "flight_crew2",
+            "code": "flight_crew2 = FlightCrew(flight_id=1, crew_member_id=2, position=\"Co-Pilot\")"
+        },
+        {
+            "test_data_row_variable": "flight_crew3",
+            "code": "flight_crew3 = FlightCrew(flight_id=2, crew_member_id=3, position=\"Flight Attendant\")"
+        },
+        {
+            "test_data_row_variable": "flight_crew4",
+            "code": "flight_crew4 = FlightCrew(flight_id=3, crew_member_id=4, position=\"Pilot\")"
+        },
+        {
+            "test_data_row_variable": "crew_member1",
+            "code": "crew_member1 = CrewMember(name=\"John Doe\", role=\"Pilot\")"
+        },
+        {
+            "test_data_row_variable": "crew_member2",
+            "code": "crew_member2 = CrewMember(name=\"Jane Smith\", role=\"Co-Pilot\")"
+        },
+        {
+            "test_data_row_variable": "crew_member3",
+            "code": "crew_member3 = CrewMember(name=\"Alice Brown\", role=\"Flight Attendant\")"
+        },
+        {
+            "test_data_row_variable": "crew_member4",
+            "code": "crew_member4 = CrewMember(name=\"Bob White\", role=\"Pilot\")"
+        },
+        {
+            "test_data_row_variable": "baggage1",
+            "code": "baggage1 = Baggage(flight_id=1, weight=15.5, owner_name=\"Michael Roe\")"
+        },
+        {
+            "test_data_row_variable": "baggage2",
+            "code": "baggage2 = Baggage(flight_id=2, weight=20.0, owner_name=\"Anna Watson\")"
+        },
+        {
+            "test_data_row_variable": "baggage3",
+            "code": "baggage3 = Baggage(flight_id=3, weight=12.3, owner_name=\"Charlie Son\")"
+        },
+        {
+            "test_data_row_variable": "baggage4",
+            "code": "baggage4 = Baggage(flight_id=4, weight=18.4, owner_name=\"Susan Hill\")"
+        },
+        {
+            "test_data_row_variable": "passenger1",
+            "code": "passenger1 = Passenger(flight_id=1, name=\"Michael Johnson\", seat_number=\"12A\")"
+        },
+        {
+            "test_data_row_variable": "passenger2",
+            "code": "passenger2 = Passenger(flight_id=2, name=\"Linda Bennett\", seat_number=\"14B\")"
+        },
+        {
+            "test_data_row_variable": "passenger3",
+            "code": "passenger3 = Passenger(flight_id=3, name=\"Paul Green\", seat_number=\"8C\")"
+        },
+        {
+            "test_data_row_variable": "passenger4",
+            "code": "passenger4 = Passenger(flight_id=4, name=\"Laura Blue\", seat_number=\"2D\")"
+        },
+        {
+            "test_data_row_variable": "ticket1",
+            "code": "ticket1 = Ticket(passenger_id=1, issue_date=date(2023, 8, 20), price=300.50)"
+        },
+        {
+            "test_data_row_variable": "ticket2",
+            "code": "ticket2 = Ticket(passenger_id=2, issue_date=date(2023, 9, 12), price=450.75)"
+        },
+        {
+            "test_data_row_variable": "ticket3",
+            "code": "ticket3 = Ticket(passenger_id=3, issue_date=date(2023, 10, 5), price=150.00)"
+        },
+        {
+            "test_data_row_variable": "ticket4",
+            "code": "ticket4 = Ticket(passenger_id=4, issue_date=date(2023, 10, 8), price=500.25)"
+        },
+        {
+            "test_data_row_variable": "maintenance_record1",
+            "code": "maintenance_record1 = MaintenanceRecord(aircraft_id=1, maintenance_date=date(2023, 9, 1), description=\"Engine Check\")"
+        },
+        {
+            "test_data_row_variable": "maintenance_record2",
+            "code": "maintenance_record2 = MaintenanceRecord(aircraft_id=2, maintenance_date=date(2023, 8, 25), description=\"Landing Gear Replacement\")"
+        },
+        {
+            "test_data_row_variable": "maintenance_record3",
+            "code": "maintenance_record3 = MaintenanceRecord(aircraft_id=3, maintenance_date=date(2023, 7, 15), description=\"Fuel System Inspection\")"
+        },
+        {
+            "test_data_row_variable": "maintenance_record4",
+            "code": "maintenance_record4 = MaintenanceRecord(aircraft_id=4, maintenance_date=date(2023, 10, 2), description=\"Cabin Pressure Check\")"
+        },
+        {
+            "test_data_row_variable": "lounge_access1",
+            "code": "lounge_access1 = LoungeAccess(passenger_id=1, airport_id=1, access_date=date(2023, 8, 20))"
+        },
+        {
+            "test_data_row_variable": "lounge_access2",
+            "code": "lounge_access2 = LoungeAccess(passenger_id=2, airport_id=2, access_date=date(2023, 9, 12))"
+        },
+        {
+            "test_data_row_variable": "lounge_access3",
+            "code": "lounge_access3 = LoungeAccess(passenger_id=3, airport_id=3, access_date=date(2023, 10, 5))"
+        },
+        {
+            "test_data_row_variable": "lounge_access4",
+            "code": "lounge_access4 = LoungeAccess(passenger_id=4, airport_id=4, access_date=date(2023, 10, 8))"
+        }
+    ],
+    "test_data_sqlite": "INSERT INTO airport (name, location, country, code, opened_date) VALUES (\"JFK International\", \"New York\", \"USA\", \"JFK\", \"1948-07-01\");\nINSERT INTO airport (name, location, country, code, opened_date) VALUES (\"Heathrow\", \"London\", \"UK\", \"LHR\", \"1946-05-31\");\nINSERT INTO airport (name, location, country, code, opened_date) VALUES (\"Haneda\", \"Tokyo\", \"Japan\", \"HND\", \"1931-08-25\");\nINSERT INTO airport (name, location, country, code, opened_date) VALUES (\"Changi\", \"Singapore\", \"Singapore\", \"SIN\", \"1981-07-01\");\nINSERT INTO flight (flight_number, departure_airport_id, arrival_airport_id, scheduled_departure, scheduled_arrival, status) VALUES (\"AA100\", 1, 2, \"2023-10-10 10:00:00\", \"2023-10-10 20:00:00\", \"On Time\");\nINSERT INTO flight (flight_number, departure_airport_id, arrival_airport_id, scheduled_departure, scheduled_arrival, status) VALUES (\"BA200\", 2, 1, \"2023-10-11 15:00:00\", \"2023-10-11 17:30:00\", \"Delayed\");\nINSERT INTO flight (flight_number, departure_airport_id, arrival_airport_id, scheduled_departure, scheduled_arrival, status) VALUES (\"JL300\", 3, 4, \"2023-10-10 14:00:00\", \"2023-10-10 22:00:00\", \"Cancelled\");\nINSERT INTO flight (flight_number, departure_airport_id, arrival_airport_id, scheduled_departure, scheduled_arrival, status) VALUES (\"SQ400\", 4, 3, \"2023-10-12 08:00:00\", \"2023-10-12 16:00:00\", \"On Time\");\nINSERT INTO airline (name, country, founded_date) VALUES (\"American Airlines\", \"USA\", \"1926-04-15\");\nINSERT INTO airline (name, country, founded_date) VALUES (\"British Airways\", \"UK\", \"1974-03-31\");\nINSERT INTO airline (name, country, founded_date) VALUES (\"Japan Airlines\", \"Japan\", \"1951-08-01\");\nINSERT INTO airline (name, country, founded_date) VALUES (\"Singapore Airlines\", \"Singapore\", \"1947-05-01\");\nINSERT INTO aircraft (model, manufacturer, seats, airline_id) VALUES (\"Boeing 737\", \"Boeing\", 160, 1);\nINSERT INTO aircraft (model, manufacturer, seats, airline_id) VALUES (\"Airbus A380\", \"Airbus\", 500, 2);\nINSERT INTO aircraft (model, manufacturer, seats, airline_id) VALUES (\"Boeing 787\", \"Boeing\", 300, 3);\nINSERT INTO aircraft (model, manufacturer, seats, airline_id) VALUES (\"Airbus A350\", \"Airbus\", 350, 4);\nINSERT INTO airport_runway (airport_id, code, length, surface_type) VALUES (1, \"4R/22L\", 4000, \"Asphalt\");\nINSERT INTO airport_runway (airport_id, code, length, surface_type) VALUES (1, \"13L/31R\", 3500, \"Concrete\");\nINSERT INTO airport_runway (airport_id, code, length, surface_type) VALUES (2, \"9L/27R\", 3700, \"Asphalt\");\nINSERT INTO airport_runway (airport_id, code, length, surface_type) VALUES (3, \"16L/34R\", 3000, \"Concrete\");\nINSERT INTO flight_crew (flight_id, crew_member_id, position) VALUES (1, 1, \"Pilot\");\nINSERT INTO flight_crew (flight_id, crew_member_id, position) VALUES (1, 2, \"Co-Pilot\");\nINSERT INTO flight_crew (flight_id, crew_member_id, position) VALUES (2, 3, \"Flight Attendant\");\nINSERT INTO flight_crew (flight_id, crew_member_id, position) VALUES (3, 4, \"Pilot\");\nINSERT INTO crew_member (name, role) VALUES (\"John Doe\", \"Pilot\");\nINSERT INTO crew_member (name, role) VALUES (\"Jane Smith\", \"Co-Pilot\");\nINSERT INTO crew_member (name, role) VALUES (\"Alice Brown\", \"Flight Attendant\");\nINSERT INTO crew_member (name, role) VALUES (\"Bob White\", \"Pilot\");\nINSERT INTO baggage (flight_id, weight, owner_name) VALUES (1, 15.5, \"Michael Roe\");\nINSERT INTO baggage (flight_id, weight, owner_name) VALUES (2, 20.0, \"Anna Watson\");\nINSERT INTO baggage (flight_id, weight, owner_name) VALUES (3, 12.3, \"Charlie Son\");\nINSERT INTO baggage (flight_id, weight, owner_name) VALUES (4, 18.4, \"Susan Hill\");\nINSERT INTO passenger (flight_id, name, seat_number) VALUES (1, \"Michael Johnson\", \"12A\");\nINSERT INTO passenger (flight_id, name, seat_number) VALUES (2, \"Linda Bennett\", \"14B\");\nINSERT INTO passenger (flight_id, name, seat_number) VALUES (3, \"Paul Green\", \"8C\");\nINSERT INTO passenger (flight_id, name, seat_number) VALUES (4, \"Laura Blue\", \"2D\");\nINSERT INTO ticket (passenger_id, issue_date, price) VALUES (1, \"2023-08-20\", 300.5);\nINSERT INTO ticket (passenger_id, issue_date, price) VALUES (2, \"2023-09-12\", 450.75);\nINSERT INTO ticket (passenger_id, issue_date, price) VALUES (3, \"2023-10-05\", 150.0);\nINSERT INTO ticket (passenger_id, issue_date, price) VALUES (4, \"2023-10-08\", 500.25);\nINSERT INTO maintenance_record (aircraft_id, maintenance_date, description) VALUES (1, \"2023-09-01\", \"Engine Check\");\nINSERT INTO maintenance_record (aircraft_id, maintenance_date, description) VALUES (2, \"2023-08-25\", \"Landing Gear Replacement\");\nINSERT INTO maintenance_record (aircraft_id, maintenance_date, description) VALUES (3, \"2023-07-15\", \"Fuel System Inspection\");\nINSERT INTO maintenance_record (aircraft_id, maintenance_date, description) VALUES (4, \"2023-10-02\", \"Cabin Pressure Check\");\nINSERT INTO lounge_access (passenger_id, airport_id, access_date) VALUES (1, 1, \"2023-08-20\");\nINSERT INTO lounge_access (passenger_id, airport_id, access_date) VALUES (2, 2, \"2023-09-12\");\nINSERT INTO lounge_access (passenger_id, airport_id, access_date) VALUES (3, 3, \"2023-10-05\");\nINSERT INTO lounge_access (passenger_id, airport_id, access_date) VALUES (4, 4, \"2023-10-08\");",
+    "name": "AirlineManagementSystem"
+}

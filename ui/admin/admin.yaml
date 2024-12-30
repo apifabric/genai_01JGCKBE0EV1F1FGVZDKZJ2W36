@@ -1,0 +1,354 @@
+about:
+  date: December 30, 2024 20:16:56
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 12
+  number_tables: 12
+info_toggle_checked: true
+resources:
+  Aircraft:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: airline_id
+    - name: model
+    - name: manufacturer
+    - name: seats
+    description: Represents aircraft used in flights, including attributes such as
+      model, manufacturer, and seats.
+    info_list: Represents aircraft used in flights, including attributes such as model,
+      manufacturer, and seats.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - aircraft_id
+      name: MaintenanceRecordList
+      resource: MaintenanceRecord
+    - direction: toone
+      fks:
+      - airline_id
+      name: airline
+      resource: Airline
+    type: Aircraft
+    user_key: id
+  Airline:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: country
+    - name: founded_date
+      type: DATE
+    - name: id
+    description: Defines the Airline entity, which includes the airline's name, country,
+      and the date it was founded.
+    info_list: Defines the Airline entity, which includes the airline's name, country,
+      and the date it was founded.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - airline_id
+      name: AircraftList
+      resource: Aircraft
+    type: Airline
+    user_key: name
+  Airport:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: location
+    - name: country
+    - name: code
+    - name: opened_date
+      type: DATE
+    - name: id
+    description: Defines the Airport entity with basic attributes like name, location,
+      country, code, and opened_date.
+    info_list: Defines the Airport entity with basic attributes like name, location,
+      country, code, and opened_date.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - airport_id
+      name: AirportRunwayList
+      resource: AirportRunway
+    - direction: tomany
+      fks:
+      - arrival_airport_id
+      name: FlightList
+      resource: Flight
+    - direction: tomany
+      fks:
+      - departure_airport_id
+      name: departureFlightList
+      resource: Flight
+    - direction: tomany
+      fks:
+      - airport_id
+      name: LoungeAccessList
+      resource: LoungeAccess
+    type: Airport
+    user_key: name
+  AirportRunway:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: airport_id
+    - name: code
+    - name: length
+    - name: surface_type
+    description: Describes the runways at airports, including runway code, length,
+      and surface type.
+    info_list: Describes the runways at airports, including runway code, length, and
+      surface type.
+    tab_groups:
+    - direction: toone
+      fks:
+      - airport_id
+      name: airport
+      resource: Airport
+    type: AirportRunway
+    user_key: id
+  Baggage:
+    attributes:
+    - label: ' owner_name*'
+      name: owner_name
+      search: true
+      sort: true
+    - name: flight_id
+    - name: weight
+    - name: id
+    description: Baggage information for a flight, including weight and owner.
+    info_list: Baggage information for a flight, including weight and owner.
+    tab_groups:
+    - direction: toone
+      fks:
+      - flight_id
+      name: flight
+      resource: Flight
+    type: Baggage
+    user_key: owner_name
+  CrewMember:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: role
+    - name: id
+    description: Details for crew members including their name and role.
+    info_list: Details for crew members including their name and role.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - crew_member_id
+      name: FlightCrewList
+      resource: FlightCrew
+    type: CrewMember
+    user_key: name
+  Flight:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: arrival_airport_id
+    - name: departure_airport_id
+    - name: flight_number
+    - name: scheduled_departure
+      type: DATETIME
+    - name: scheduled_arrival
+      type: DATETIME
+    - name: status
+    description: Defines the Flight entity representing each flight with attributes
+      such as flight number, departure and arrival times, and status.
+    info_list: Defines the Flight entity representing each flight with attributes
+      such as flight number, departure and arrival times, and status.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - flight_id
+      name: BaggageList
+      resource: Baggage
+    - direction: tomany
+      fks:
+      - flight_id
+      name: FlightCrewList
+      resource: FlightCrew
+    - direction: tomany
+      fks:
+      - flight_id
+      name: PassengerList
+      resource: Passenger
+    - direction: toone
+      fks:
+      - arrival_airport_id
+      name: arrival_airport
+      resource: Airport
+    - direction: toone
+      fks:
+      - departure_airport_id
+      name: departure_airport
+      resource: Airport
+    type: Flight
+    user_key: id
+  FlightCrew:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: crew_member_id
+    - name: flight_id
+    - name: position
+    description: Junction table to map crew members to flights with positions.
+    info_list: Junction table to map crew members to flights with positions.
+    tab_groups:
+    - direction: toone
+      fks:
+      - crew_member_id
+      name: crew_member
+      resource: CrewMember
+    - direction: toone
+      fks:
+      - flight_id
+      name: flight
+      resource: Flight
+    type: FlightCrew
+    user_key: id
+  LoungeAccess:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: airport_id
+    - name: passenger_id
+    - name: access_date
+      type: DATE
+    description: Tracks lounge access for passengers at airports.
+    info_list: Tracks lounge access for passengers at airports.
+    tab_groups:
+    - direction: toone
+      fks:
+      - airport_id
+      name: airport
+      resource: Airport
+    - direction: toone
+      fks:
+      - passenger_id
+      name: passenger
+      resource: Passenger
+    type: LoungeAccess
+    user_key: id
+  MaintenanceRecord:
+    attributes:
+    - label: ' description*'
+      name: description
+      search: true
+      sort: true
+    - name: aircraft_id
+    - name: maintenance_date
+      type: DATE
+    - name: id
+    description: Maintenance logs for aircraft, detailing the maintenance performed.
+    info_list: Maintenance logs for aircraft, detailing the maintenance performed.
+    tab_groups:
+    - direction: toone
+      fks:
+      - aircraft_id
+      name: aircraft
+      resource: Aircraft
+    type: MaintenanceRecord
+    user_key: description
+  Passenger:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: flight_id
+    - name: seat_number
+    - name: id
+    description: Contains passenger details for a flight, including name and seat
+      number.
+    info_list: Contains passenger details for a flight, including name and seat number.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - passenger_id
+      name: LoungeAccessList
+      resource: LoungeAccess
+    - direction: tomany
+      fks:
+      - passenger_id
+      name: TicketList
+      resource: Ticket
+    - direction: toone
+      fks:
+      - flight_id
+      name: flight
+      resource: Flight
+    type: Passenger
+    user_key: name
+  Ticket:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: passenger_id
+    - name: issue_date
+      type: DATE
+    - name: price
+    description: Represents tickets purchased by passengers for flights.
+    info_list: Represents tickets purchased by passengers for flights.
+    tab_groups:
+    - direction: toone
+      fks:
+      - passenger_id
+      name: passenger
+      resource: Passenger
+    type: Ticket
+    user_key: id
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'
